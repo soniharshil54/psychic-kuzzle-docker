@@ -33,20 +33,29 @@ services:
       - psychic-kuzzle-network
 
   elasticsearch:
-    image: kuzzleio/elasticsearch:7.4.0
-    restart: on-failure
-    ulimits:
-      nofile: 65536
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: 7.9.1
+    volumes:
+      - "./esauditdata:/usr/share/elasticsearch/data" 
+    ports:
+      - "9202:9200"
+      - "9302:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      # ELASTIC_PASSWORD: "faQy4bpZ0GJz"
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
     healthcheck:
       test: curl -f http://localhost:9200 || exit 1
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 30s
-    volumes:
-      - "./eskuzzledata:/usr/share/elasticsearch/data" 
+      start_period: 30s  
     networks:
-      - psychic-kuzzle-network
+      - psychic-kuzzle-network      
 
 networks:
   psychic-kuzzle-network:
