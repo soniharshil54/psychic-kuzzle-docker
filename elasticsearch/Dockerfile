@@ -1,7 +1,5 @@
-ARG ELK_VERSION
-
 # https://www.docker.elastic.co/
-FROM docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+FROM docker.elastic.co/elasticsearch/elasticsearch:7.9.1
 
 ADD config/elasticsearch.yml /usr/share/elasticsearch/config/
 RUN chmod 664 /usr/share/elasticsearch/config/elasticsearch.yml

@@ -12,3 +12,6 @@ network.host: 0.0.0.0
 xpack.license.self_generated.type: trial
 # xpack.security.enabled: true
 xpack.monitoring.collection.enabled: true
+
+# Elasticsearch fails to start: CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER are needed
+bootstrap.system_call_filter: false
