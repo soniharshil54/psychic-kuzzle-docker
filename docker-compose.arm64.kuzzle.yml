@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   kuzzle:
-    image: kuzzleio/core-dev:2
+    image: kuzzlev1/arm64
     restart: on-failure
     ports:
       - "7514:7512"
@@ -26,6 +26,7 @@ services:
       - kuzzle_services__memoryStorage__node__host=redis
       - kuzzle_server__protocols__mqtt__enabled=true
       - NODE_ENV=production
+    command: npm start  
 
   redis:
     image: redis:5
