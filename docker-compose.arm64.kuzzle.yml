@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  kuzzle:
+    image: kuzzleio/core-dev:2
+    restart: on-failure
+    ports:
+      - "7514:7512"
+      - "1885:1883"
+    cap_add:
+      - SYS_PTRACE
+    networks:
+      - psychic-kuzzle-network
+    depends_on:
+      - redis
+      - elasticsearch
+    healthcheck:
+      test: curl -f http://localhost:7514 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    environment:
+      - kuzzle_services__storageEngine__client__node=http://elasticsearch:9200
+      - kuzzle_services__internalCache__node__host=redis
+      - kuzzle_services__memoryStorage__node__host=redis
+      - kuzzle_server__protocols__mqtt__enabled=true
+      - NODE_ENV=production
+
+  redis:
+    image: redis:5
+    networks:
+      - psychic-kuzzle-network
+
+  elasticsearch:
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: 7.9.1
+    volumes:
+      - "./esauditdata:/usr/share/elasticsearch/data" 
+    ports:
+      - "9202:9200"
+      - "9302:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      # ELASTIC_PASSWORD: "faQy4bpZ0GJz"
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
+    healthcheck:
+      test: curl -f http://localhost:9200 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s  
+    networks:
+      - psychic-kuzzle-network      
+
+networks:
+  psychic-kuzzle-network:
+    name: psychic-kuzzle-network
+    driver: bridge
