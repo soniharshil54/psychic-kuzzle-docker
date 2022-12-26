@@ -27,7 +27,6 @@ services:
       - kuzzle_services__memoryStorage__node__host=redis
       - kuzzle_server__protocols__mqtt__enabled=true
       - NODE_ENV=production
-    command: npm start  
 
   redis:
     image: redis:5
