@@ -37,8 +37,8 @@ services:
       context: elasticsearch/
       args:
         ELK_VERSION: 7.9.1
-    volumes:
-      - "./esauditdata:/usr/share/elasticsearch/data" 
+    # volumes:
+    #   - "./esauditdata:/usr/share/elasticsearch/data" 
     ports:
       - "9202:9200"
       - "9302:9300"
