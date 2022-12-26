@@ -12,15 +12,6 @@ services:
       - SYS_PTRACE
     networks:
       - psychic-kuzzle-network
-    depends_on:
-      - redis
-      - elasticsearch
-    healthcheck:
-      test: curl -f http://localhost:7514 || exit 1
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
     environment:
       - kuzzle_services__storageEngine__client__node=http://elasticsearch:9200
       - kuzzle_services__internalCache__node__host=redis
